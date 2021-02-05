@@ -26,14 +26,12 @@ public class CsvReader {
             BufferedReader br=new BufferedReader(new FileReader("src/main/resources/roomprice.csv"));
             while((line=br.readLine())!=null){
                 String[] data=line.split(",");
-                RoomPrice rp=new RoomPrice(Integer.parseInt(data[0]),new SimpleDateFormat("dd/MM/yyyy").parse(data[1]),Integer.parseInt(data[2]),Integer.parseInt(data[3]));
+                RoomPrice rp=new RoomPrice(Integer.parseInt(data[0]),data[1],Integer.parseInt(data[2]),Integer.parseInt(data[3]));
                 kafkaTemplate.send(TOPIC,rp);
             }
         }catch (FileNotFoundException e){
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
