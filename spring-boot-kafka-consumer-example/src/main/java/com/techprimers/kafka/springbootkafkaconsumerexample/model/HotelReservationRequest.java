@@ -1,8 +1,14 @@
 package com.techprimers.kafka.springbootkafkaconsumerexample.model;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.techprimers.kafka.springbootkafkaconsumerexample.Enums.RoomCatEnum;
+import com.techprimers.kafka.springbootkafkaconsumerexample.config.CustomJsonDateDeserializer;
 
+import javax.persistence.Basic;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.*;
 import java.util.Date;
 
@@ -12,53 +18,63 @@ public class HotelReservationRequest {
 
     @Min(value = 1,message = "hotel_id should be greater than 0")
     @NotNull(message="Hotel Id is required")
-    private int hotel_id;
+    private long hotel_id;
 
-    @Size(min=1,message="Date cannot be empty")
-    @NotBlank(message="Date is required")
-    private String date;
 
-    @Min(value = 1,message = "Room_Category Id should be greater than 0")
+    @Basic
+    @Temporal(TemporalType.DATE)
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+    private Date date;
+
+
     @NotNull(message="Room_Category Id is required")
-    private int room_category_id;
+    private String room_category;
 
     @Min(value = 1,message = "Occupancy should be greater than 0")
     @Max(value = 3,message = "Occupancy should be less than 3")
     @NotNull(message="Occupancy cannot be null")
     private int occupancy;
 
+    private double price;
     public HotelReservationRequest() {
     }
 
-    public HotelReservationRequest(int hotel_id, String date, int room_category_id, int occupancy) {
+    public HotelReservationRequest(long hotel_id, Date date, String room_category, int occupancy) {
         this.hotel_id = hotel_id;
         this.date = date;
-        this.room_category_id = room_category_id;
+        this.room_category = room_category;
         this.occupancy = occupancy;
     }
 
-    public int getHotel_id() {
+    public HotelReservationRequest(long hotel_id, Date date, String room_category, int occupancy,double price) {
+        this.hotel_id = hotel_id;
+        this.date = date;
+        this.room_category = room_category;
+        this.occupancy = occupancy;
+        this.price=price;
+    }
+    public long getHotel_id() {
         return hotel_id;
     }
 
-    public void setHotel_id(int hotel_id) {
+    public void setHotel_id(long hotel_id) {
         this.hotel_id = hotel_id;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public int getRoom_category_id() {
-        return room_category_id;
+    public String getRoom_category() {
+        return room_category;
     }
 
-    public void setRoom_category_id(int room_category_id) {
-        this.room_category_id = room_category_id;
+    public void setRoom_category(String room_category) {
+        this.room_category = room_category;
     }
 
     public int getOccupancy() {
@@ -69,7 +85,15 @@ public class HotelReservationRequest {
         this.occupancy = occupancy;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public String keyForCache() {
-        return this.hotel_id+"@"+this.room_category_id+"@"+this.date+"@"+this.occupancy;
+        return this.hotel_id+"@"+ RoomCatEnum.valueOf(this.room_category).getValue() +"@"+this.date.toString()+"@"+this.occupancy;
     }
 }

@@ -1,9 +1,7 @@
 package com.techprimers.kafka.springbootkafkaconsumerexample.dao;
 
 
-import com.techprimers.kafka.springbootkafkaconsumerexample.model.HotelReservation;
 import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -18,15 +16,15 @@ import java.util.List;
 public interface RoomPriceRepository extends CrudRepository<RoomPrice,Long>{
 
     @Query(value = "SELECT price FROM roomprice WHERE hotel_id=:hotel_id AND date=:date AND room_category_id=:room_category_id AND occupancy=:occupancy", nativeQuery = true)
-    public List<Double> getPrice(int hotel_id, String date, int room_category_id, int occupancy);
+    public List<Double> getPrice(long hotel_id, Date date, int room_category_id, int occupancy);
 
     @Modifying
     @Query(value = "UPDATE roomprice SET price=:price WHERE hotel_id=:hotel_id AND date=:date AND room_category_id=:room_category_id AND occupancy=:occupancy", nativeQuery = true)
-    public void updatePrice(int hotel_id,String date, int room_category_id, int occupancy,double price);
+    public int updatePrice(long hotel_id,Date date, int room_category_id, int occupancy,double price);
 
     @Modifying
     @Query(value = "DELETE FROM roomprice WHERE hotel_id=:hotel_id AND date=:date AND room_category_id=:room_category_id AND occupancy=:occupancy", nativeQuery = true)
-    public void deleterow(int hotel_id,String date, int room_category_id, int occupancy);
+    public int deleterow(long hotel_id,Date date, int room_category_id, int occupancy);
 
 
 }

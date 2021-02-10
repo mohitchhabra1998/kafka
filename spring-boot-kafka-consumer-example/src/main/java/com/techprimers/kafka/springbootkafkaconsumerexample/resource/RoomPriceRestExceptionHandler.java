@@ -44,7 +44,7 @@ public class RoomPriceRestExceptionHandler {
         RoomPriceErrorResponse error=new RoomPriceErrorResponse();
 
         error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage(exc.getMessage());
+        error.setMessage("Bad Request!!");
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
@@ -55,7 +55,7 @@ public class RoomPriceRestExceptionHandler {
             MethodArgumentNotValidException ex) {
         RoomPriceErrorResponse error=new RoomPriceErrorResponse();
         error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage(ex.getBindingResult().getFieldError().getDefaultMessage());
+        error.setMessage("Invalid Input!!!");
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
