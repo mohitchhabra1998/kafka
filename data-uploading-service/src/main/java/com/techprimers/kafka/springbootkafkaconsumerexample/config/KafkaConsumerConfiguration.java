@@ -2,7 +2,6 @@ package com.techprimers.kafka.springbootkafkaconsumerexample.config;
 
 
 import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice;
-import com.techprimers.kafka.springbootkafkaconsumerexample.model.User;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
