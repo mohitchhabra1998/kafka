@@ -2,7 +2,6 @@ package com.techprimers.kafka.springbootkafkaconsumerexample.model;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.techprimers.kafka.springbootkafkaconsumerexample.Converter.PgJsonbToMapConverter;
 import com.techprimers.kafka.springbootkafkaconsumerexample.config.CustomJsonDateDeserializer;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;
@@ -13,7 +12,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -34,7 +32,7 @@ public class RoomPrice2 implements Serializable {
     @Column(name="date")
     @Basic
     @Temporal(TemporalType.DATE)
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+    //@JsonDeserialize(using = CustomJsonDateDeserializer.class)
     private Date date;
 
     @Min(value = 1,message = "Room_Category Id should be greater than 0")
@@ -56,7 +54,7 @@ public class RoomPrice2 implements Serializable {
         this.room_category_id = room_category_id;
         this.otp=otp;
     }
-    public RoomPrice2(long id,long hotel_id, Date date, int room_category_id, Map<String,Double> otp) {
+    public RoomPrice2(long id, long hotel_id, Date date, int room_category_id, Map<String,Double> otp) {
         this.id=id;
         this.hotel_id = hotel_id;
         this.date = date;

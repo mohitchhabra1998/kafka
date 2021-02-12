@@ -2,6 +2,7 @@ package com.techprimers.kafka.springbootkafkaconsumerexample.config;
 
 
 import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice;
+import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice2;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -39,19 +40,19 @@ public class KafkaConsumerConfiguration {
     }*/
 
     @Bean
-    public ConsumerFactory<String, RoomPrice> userConsumerFactory(){
+    public ConsumerFactory<String, RoomPrice2> userConsumerFactory(){
         Map<String,Object> config=new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"127.0.0.1:9092");
         config.put(ConsumerConfig.GROUP_ID_CONFIG,"group_json");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
 
-        return new DefaultKafkaConsumerFactory<String, RoomPrice>(config,new StringDeserializer(),new JsonDeserializer<>(RoomPrice.class));
+        return new DefaultKafkaConsumerFactory<String, RoomPrice2>(config,new StringDeserializer(),new JsonDeserializer<>(RoomPrice2.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, RoomPrice> userKafkaListenerFactory(){
-        ConcurrentKafkaListenerContainerFactory<String,RoomPrice> factory=new ConcurrentKafkaListenerContainerFactory<String,RoomPrice>();
+    public ConcurrentKafkaListenerContainerFactory<String, RoomPrice2> userKafkaListenerFactory(){
+        ConcurrentKafkaListenerContainerFactory<String,RoomPrice2> factory=new ConcurrentKafkaListenerContainerFactory<String,RoomPrice2>();
         factory.setConsumerFactory(userConsumerFactory());
         return factory;
     }
