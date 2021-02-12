@@ -94,6 +94,6 @@ public class HotelReservationRequest {
     }
 
     public String keyForCache() {
-        return this.hotel_id+"@"+ RoomCatEnum.valueOf(this.room_category).getValue() +"@"+this.date.toString()+"@"+this.occupancy;
+        return this.hotel_id+"@"+ RoomCatEnum.valueOf(this.room_category).getValue() +"@"+this.date.toString();
     }
 }
