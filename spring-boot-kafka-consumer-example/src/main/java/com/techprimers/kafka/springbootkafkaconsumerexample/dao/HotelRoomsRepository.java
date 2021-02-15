@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 @Transactional
 public interface HotelRoomsRepository extends CrudRepository<HotelRooms,Long> {
-    @Query(value = "SELECT * FROM hotelrooms WHERE hotel_id=:hotel_id AND room_category_id=:room_category_id AND occupancy=:occupancy", nativeQuery = true)
-    public List<HotelRooms> get(long hotel_id,int room_category_id, int occupancy);
+    @Query(value = "SELECT * FROM hotelrooms WHERE hotel_id=:hotelId AND room_category_id=:roomCategoryId AND occupancy=:occupancy", nativeQuery = true)
+    public List<HotelRooms> get(long hotelId,int roomCategoryId, int occupancy);
 }

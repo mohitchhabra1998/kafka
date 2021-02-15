@@ -1,17 +1,23 @@
 package com.techprimers.kafka.springbootkafkaconsumerexample.model;
 
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.techprimers.kafka.springbootkafkaconsumerexample.config.CustomJsonDateDeserializer;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.data.redis.core.RedisHash;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 @Entity
-@Table(name="roomprice")
-public class RoomPrice {
+@Table(name="roomprice2")
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+public class RoomPrice implements Serializable {
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -21,46 +27,39 @@ public class RoomPrice {
     @Min(value = 1,message = "hotel_id should be greater than 0")
     @NotNull(message="Hotel Id is required")
     @Column(name="hotel_id")
-    private long hotel_id;
+    private long hotelId;
 
     @Column(name="date")
     @Basic
     @Temporal(TemporalType.DATE)
+    //@JsonDeserialize(using = CustomJsonDateDeserializer.class)
     private Date date;
 
     @Min(value = 1,message = "Room_Category Id should be greater than 0")
     @NotNull(message="Room_Category Id is required")
     @Column(name="room_category_id")
-    private int room_category_id;
+    private int roomCategoryId;
 
-    @Min(value = 1,message = "Occupancy should be greater than 0")
-    @Max(value = 3,message = "Occupancy should be less than 3")
-    @NotNull(message="Occupancy cannot be null")
-    @Column(name="occupancy")
-    private int occupancy;
-
-    @Min(value = 0,message = "price should be greater than 0")
-    @NotNull(message="Price should be entered")
-    @Column(name="price")
-    private double price;
+    @Column(name="otp",columnDefinition = "jsonb")
+    //@Convert(converter = PgJsonbToMapConverter.class)
+    @Type(type="jsonb")
+    private Map<String,Double> occupancyToPrice;
 
     public RoomPrice() {
-
     }
 
-    public RoomPrice(long hotel_id, Date date, int room_category_id, int occupancy) {
-        this.hotel_id = hotel_id;
+    public RoomPrice(long hotelId, Date date, int roomCategoryId, Map<String,Double> occupancyToPrice) {
+        this.hotelId = hotelId;
         this.date = date;
-        this.room_category_id = room_category_id;
-        this.occupancy = occupancy;
+        this.roomCategoryId = roomCategoryId;
+        this.occupancyToPrice=occupancyToPrice;
     }
-
-    public RoomPrice(long id, long hotel_id, Date date, int room_category_id, int occupancy) {
-        this.id = id;
-        this.hotel_id = hotel_id;
+    public RoomPrice(long id, long hotel_id, Date date, int room_category_id, Map<String,Double> occupancyToPrice) {
+        this.id=id;
+        this.hotelId = hotelId;
         this.date = date;
-        this.room_category_id = room_category_id;
-        this.occupancy = occupancy;
+        this.roomCategoryId = roomCategoryId;
+        this.occupancyToPrice=occupancyToPrice;
     }
 
     public long getId() {
@@ -71,12 +70,12 @@ public class RoomPrice {
         this.id = id;
     }
 
-    public long getHotel_id() {
-        return hotel_id;
+    public long getHotelId() {
+        return hotelId;
     }
 
-    public void setHotel_id(long hotel_id) {
-        this.hotel_id = hotel_id;
+    public void setHotelId(long hotelId) {
+        this.hotelId = hotelId;
     }
 
     public Date getDate() {
@@ -87,42 +86,29 @@ public class RoomPrice {
         this.date = date;
     }
 
-    public int getRoom_category_id() {
-        return room_category_id;
+    public int getRoomCategoryId() {
+        return roomCategoryId;
     }
 
-    public void setRoom_category_id(int room_category_id) {
-        this.room_category_id = room_category_id;
+    public void setRoomCategoryId(int roomCategoryId) {
+        this.roomCategoryId = roomCategoryId;
     }
 
-    public int getOccupancy() {
-        return occupancy;
+    public Map<String, Double> getOccupancyToPrice() {
+        return occupancyToPrice;
     }
 
-    public void setOccupancy(int occupancy) {
-        this.occupancy = occupancy;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+    public void setOccupancyToPrice(Map<String, Double> occupancyToPrice) {
+        this.occupancyToPrice = occupancyToPrice;
     }
 
     @Override
     public String toString() {
-        return "RoomPrice{" +
+        return "RoomPrice2{" +
                 "id=" + id +
-                ", hotel_id=" + hotel_id +
-                ", date='" + date + '\'' +
-                ", room_category_id=" + room_category_id +
-                ", occupancy=" + occupancy +
-                ", price=" + price +
+                ", hotel_id=" + hotelId +
+                ", date=" + date +
+                ", room_category_id=" + roomCategoryId +
                 '}';
-    }
-    public String keyForCache() {
-        return this.hotel_id+"@"+this.room_category_id+"@"+this.date.toString()+"@"+this.occupancy;
     }
 }

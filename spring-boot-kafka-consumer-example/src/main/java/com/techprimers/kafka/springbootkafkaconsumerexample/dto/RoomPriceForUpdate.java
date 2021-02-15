@@ -1,4 +1,4 @@
-package com.techprimers.kafka.springbootkafkaconsumerexample.model;
+package com.techprimers.kafka.springbootkafkaconsumerexample.dto;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -26,7 +26,7 @@ public class RoomPriceForUpdate implements Serializable {
     @Min(value = 1,message = "hotel_id should be greater than 0")
     @NotNull(message="Hotel Id is required")
     @Column(name="hotel_id")
-    private long hotel_id;
+    private long hotelId;
 
     @Column(name="date")
     @Basic
@@ -35,28 +35,28 @@ public class RoomPriceForUpdate implements Serializable {
     private Date date;
 
     @NotNull(message="Room_Category Id is required")
-    private String room_category;
+    private String roomCategory;
 
     @Column(name="otp",columnDefinition = "jsonb")
     //@Convert(converter = PgJsonbToMapConverter.class)
     @Type(type="jsonb")
-    private Map<String,Double> otp;
+    private Map<String,Double> occupancyToPrice;
 
     public RoomPriceForUpdate() {
     }
 
-    public RoomPriceForUpdate(long hotel_id, Date date, String room_category, Map<String,Double> otp) {
-        this.hotel_id = hotel_id;
+    public RoomPriceForUpdate(long hotelId, Date date, String roomCategory, Map<String,Double> occupancyToPrice) {
+        this.hotelId = hotelId;
         this.date = date;
-        this.room_category = room_category;
-        this.otp=otp;
+        this.roomCategory = roomCategory;
+        this.occupancyToPrice=occupancyToPrice;
     }
-    public RoomPriceForUpdate(long id, long hotel_id, Date date, String room_category, Map<String,Double> otp) {
+    public RoomPriceForUpdate(long id, long hotel_id, Date date, String room_category, Map<String,Double> occupancyToPrice) {
         this.id=id;
-        this.hotel_id = hotel_id;
+        this.hotelId = hotelId;
         this.date = date;
-        this.room_category = room_category;
-        this.otp=otp;
+        this.roomCategory = roomCategory;
+        this.occupancyToPrice=occupancyToPrice;
     }
 
     public long getId() {
@@ -67,12 +67,12 @@ public class RoomPriceForUpdate implements Serializable {
         this.id = id;
     }
 
-    public long getHotel_id() {
-        return hotel_id;
+    public long getHotelId() {
+        return hotelId;
     }
 
-    public void setHotel_id(long hotel_id) {
-        this.hotel_id = hotel_id;
+    public void setHotelId(long hotelId) {
+        this.hotelId = hotelId;
     }
 
     public Date getDate() {
@@ -83,32 +83,32 @@ public class RoomPriceForUpdate implements Serializable {
         this.date = date;
     }
 
-    public String getRoom_category() {
-        return this.room_category;
+    public String getRoomCategory() {
+        return roomCategory;
     }
 
-    public void setRoom_category(String room_category) {
-        this.room_category = room_category;
+    public void setRoomCategory(String roomCategory) {
+        this.roomCategory = roomCategory;
     }
 
-    public Map<String, Double> getOtp() {
-        return otp;
+    public Map<String, Double> getOccupancyToPrice() {
+        return occupancyToPrice;
     }
 
-    public void setOtp(Map<String,Double> otp) {
-        this.otp = otp;
+    public void setOccupancyToPrice(Map<String, Double> occupancyToPrice) {
+        this.occupancyToPrice = occupancyToPrice;
     }
 
     @Override
     public String toString() {
         return "RoomPrice2{" +
                 "id=" + id +
-                ", hotel_id=" + hotel_id +
+                ", hotel_id=" + hotelId +
                 ", date=" + date +
-                ", room_category_id=" + room_category +
+                ", room_category_id=" + roomCategory +
                 '}';
     }
     public String keyForCache() {
-        return this.hotel_id+"@"+ RoomCatEnum.valueOf(this.room_category).getValue() +"@"+this.date.toString();
+        return this.hotelId+"@"+ RoomCatEnum.valueOf(this.roomCategory).getValue() +"@"+this.date.toString();
     }
 }
