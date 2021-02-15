@@ -48,7 +48,7 @@ public class CsvReader {
 
                         if(data_index == data_size-1){
 
-                            while(occupancy < 10){
+                            while(occupancy < 3){
                                 occupancy++;
                                 key = occupancy.toString();
                                 occupancy_to_price.put(key, value);

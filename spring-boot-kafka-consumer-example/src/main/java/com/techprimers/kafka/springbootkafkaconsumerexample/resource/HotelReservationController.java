@@ -49,10 +49,10 @@ public class HotelReservationController {
     //@Cacheable(key="#hotelReservationRequest.keyForCache()",value = HASH)
     public Double getHotelReservationPrice(@Valid @RequestBody HotelReservationRequest hotelReservationRequest){
 
-       /* List<HotelRooms> li=hotelRoomsRepository.get(hotelReservationRequest.getHotel_id(),
+        List<HotelRooms> li=hotelRoomsRepository.get(hotelReservationRequest.getHotel_id(),
                 RoomCatEnum.valueOf(hotelReservationRequest.getRoom_category()).getValue(),
                 hotelReservationRequest.getOccupancy());
-        if(li.isEmpty()) throw new CombinationNotFoundException("Entered Combination does not exist");*/
+        if(li.isEmpty()) throw new CombinationNotFoundException("Entered Combination does not exist");
         /*List<Double> prices = roomPriceRepository.getPrice(hotelReservationRequest.getHotel_id(),
                 hotelReservationRequest.getDate(), RoomCatEnum.valueOf(hotelReservationRequest.getRoom_category()).getValue(),
                 hotelReservationRequest.getOccupancy());
@@ -118,7 +118,7 @@ public class HotelReservationController {
         if(!validate(roomPriceForUpdate.getOtp())){
             throw new BadlyFormatedException("Prices of occupancies should be in Non-decreasing order");
         }
-        System.out.println(roomPriceForUpdate.getOtp().toString());
+        //System.out.println(roomPriceForUpdate.getOtp().toString());
         int rows=roomPrice2Repository.deleterow(roomPriceForUpdate.getHotel_id(),roomPriceForUpdate.getDate(),
                 RoomCatEnum.valueOf(roomPriceForUpdate.getRoom_category()).getValue());
         if(rows==0) throw new CombinationNotFoundException("Record does not exist!!");
@@ -137,19 +137,21 @@ public class HotelReservationController {
     public String deleteHotelReservation(@Valid @RequestBody RoomForDelete roomForDelete){
 
         String cacheKey=roomForDelete.keyForCache();
-        map.remove(cacheKey);
+
 
         int rows=roomPrice2Repository.deleterow(roomForDelete.getHotel_id(),roomForDelete.getDate(),
                 RoomCatEnum.valueOf(roomForDelete.getRoom_category()).getValue());
         if(rows==0) throw new CombinationNotFoundException("Record does not exist!!");
+
+        map.remove(cacheKey);
         return "delete Successfull";
     }
 
-    @GetMapping("/demo")
+   /* @GetMapping("/demo")
     public String getMap(){
         List<RoomPrice2> lis=roomPrice2Repository.findById(1);
         return lis.get(0).getOtp().toString();
-    }
+    }*/
 
     public boolean validate(Map<String,Double> map){
         double f=-1.0;
