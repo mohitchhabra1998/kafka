@@ -22,13 +22,13 @@ public class HotelRooms {
     @Min(value = 1,message = "hotel_id should be greater than 0")
     @NotNull(message="Hotel Id is required")
     @Column(name="hotel_id")
-    private long hotel_id;
+    private long hotelId;
 
 
     @Min(value = 1,message = "Room_Category Id should be greater than 0")
     @NotNull(message="Room_Category Id is required")
     @Column(name="room_category_id")
-    private int room_category_id;
+    private int roomCategoryId;
 
 
     @Min(value = 1,message = "Occupancy should be greater than 0")
@@ -40,10 +40,10 @@ public class HotelRooms {
     public HotelRooms() {
     }
 
-    public HotelRooms(long id,long hotel_id,int room_category_id,int occupancy){
+    public HotelRooms(long id,long hotelId,int roomCategoryId,int occupancy){
         this.id=id;
-        this.hotel_id=hotel_id;
-        this.room_category_id=room_category_id;
+        this.hotelId=hotelId;
+        this.roomCategoryId=roomCategoryId;
         this.occupancy=occupancy;
     }
 
@@ -55,20 +55,20 @@ public class HotelRooms {
         this.id = id;
     }
 
-    public long getHotel_id() {
-        return hotel_id;
+    public long getHotelId() {
+        return hotelId;
     }
 
-    public void setHotel_id(long hotel_id) {
-        this.hotel_id = hotel_id;
+    public void setHotelId(long hotelId) {
+        this.hotelId = hotelId;
     }
 
-    public int getRoom_category_id() {
-        return room_category_id;
+    public int getRoomCategoryId() {
+        return roomCategoryId;
     }
 
-    public void setRoom_category_id(int room_category_id) {
-        this.room_category_id = room_category_id;
+    public void setRoomCategoryId(int roomCategoryId) {
+        this.roomCategoryId = roomCategoryId;
     }
 
     public int getOccupancy() {

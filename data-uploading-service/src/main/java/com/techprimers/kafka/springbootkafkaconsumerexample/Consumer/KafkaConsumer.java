@@ -1,8 +1,7 @@
 package com.techprimers.kafka.springbootkafkaconsumerexample.Consumer;
 
-import com.techprimers.kafka.springbootkafkaconsumerexample.dao.RoomPrice2Repository;
+import com.techprimers.kafka.springbootkafkaconsumerexample.dao.RoomPriceRepository;
 import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice;
-import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice2;
 import com.techprimers.kafka.springbootkafkaconsumerexample.service.RoomPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,13 +15,13 @@ public class KafkaConsumer {
     private RoomPriceService roomPriceService;
 
     @Autowired
-    private RoomPrice2Repository roomPrice2Repository;
+    private RoomPriceRepository roomPriceRepository;
 
     @KafkaListener(topics="Kafka_Example2",groupId = "group_json",containerFactory="userKafkaListenerFactory")
-    public void consumeJson(@Valid RoomPrice2 roomPrice2){
+    public void consumeJson(@Valid RoomPrice roomPrice){
         try{
-            System.out.println("Consumed JSON message "+roomPrice2);
-            roomPrice2Repository.save(roomPrice2);
+            System.out.println("Consumed JSON message "+ roomPrice);
+            roomPriceRepository.save(roomPrice);
         }catch (Exception e){
             System.out.println("Invalid!!");
         }

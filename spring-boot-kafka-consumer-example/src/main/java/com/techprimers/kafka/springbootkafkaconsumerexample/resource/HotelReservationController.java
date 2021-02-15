@@ -3,16 +3,17 @@ package com.techprimers.kafka.springbootkafkaconsumerexample.resource;
 
 import com.techprimers.kafka.springbootkafkaconsumerexample.Enums.RoomCatEnum;
 import com.techprimers.kafka.springbootkafkaconsumerexample.dao.HotelRoomsRepository;
-import com.techprimers.kafka.springbootkafkaconsumerexample.dao.RoomPrice2Repository;
 import com.techprimers.kafka.springbootkafkaconsumerexample.dao.RoomPriceRepository;
+import com.techprimers.kafka.springbootkafkaconsumerexample.dto.HotelReservationRequest;
+import com.techprimers.kafka.springbootkafkaconsumerexample.dto.RoomForDelete;
+import com.techprimers.kafka.springbootkafkaconsumerexample.dto.RoomPriceForUpdate;
 import com.techprimers.kafka.springbootkafkaconsumerexample.model.*;
+import com.techprimers.kafka.springbootkafkaconsumerexample.service.HotelRoomsService;
+import com.techprimers.kafka.springbootkafkaconsumerexample.service.RoomPriceService;
 import org.redisson.Redisson;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,40 +26,19 @@ import java.util.Map;
 @CrossOrigin(origins="http://localhost:4200")
 public class HotelReservationController {
 
-    private static final String HASH="PRICE";
 
     private static final double DEFAULT_PRICE=1500.0;
-    @Autowired
-    private RoomPriceRepository roomPriceRepository;
 
     @Autowired
-    private HotelRoomsRepository hotelRoomsRepository;
+    private RoomPriceService roomPriceService;
 
-    @Autowired
-    private RoomPrice2Repository roomPrice2Repository;
-
-    RedissonClient reddisson = Redisson.create();
-    RMap<String, Map<String, Double>> map = reddisson.getMap("myMap");
-
-    @PostMapping("hotelreservations")
-    public void createHotelReservation(@Valid @RequestBody RoomPrice roomPrice){
-        roomPriceRepository.save(roomPrice);
-    }
-
-    @PostMapping("hotelreservations/price")
-    //@Cacheable(key="#hotelReservationRequest.keyForCache()",value = HASH)
+    @RequestMapping(value = "hotelreservations/price",method =RequestMethod.POST)
     public Double getHotelReservationPrice(@Valid @RequestBody HotelReservationRequest hotelReservationRequest){
 
-        List<HotelRooms> li=hotelRoomsRepository.get(hotelReservationRequest.getHotel_id(),
-                RoomCatEnum.valueOf(hotelReservationRequest.getRoom_category()).getValue(),
+        /*List<HotelRooms> li=hotelRoomsService.get(hotelReservationRequest.getHotelId(),
+                RoomCatEnum.valueOf(hotelReservationRequest.getRoomCategory()).getValue(),
                 hotelReservationRequest.getOccupancy());
         if(li.isEmpty()) throw new CombinationNotFoundException("Entered Combination does not exist");
-        /*List<Double> prices = roomPriceRepository.getPrice(hotelReservationRequest.getHotel_id(),
-                hotelReservationRequest.getDate(), RoomCatEnum.valueOf(hotelReservationRequest.getRoom_category()).getValue(),
-                hotelReservationRequest.getOccupancy());
-        if(prices.isEmpty()) return DEFAULT_PRICE;
-        return prices.get(0);*/
-
 
         String cacheKey=hotelReservationRequest.keyForCache();
         String occupancy=Integer.toString(hotelReservationRequest.getOccupancy());
@@ -82,14 +62,14 @@ public class HotelReservationController {
             }
         }
 
-        List<RoomPrice2> li2=roomPrice2Repository.findByCombo(hotelReservationRequest.getHotel_id(),
+        List<RoomPrice> li2=roomPriceService.findByCombo(hotelReservationRequest.getHotelId(),
                 hotelReservationRequest.getDate(),
-                RoomCatEnum.valueOf(hotelReservationRequest.getRoom_category()).getValue());
+                RoomCatEnum.valueOf(hotelReservationRequest.getRoomCategory()).getValue());
         if(li2.isEmpty()){
             System.out.println("empty");
             return DEFAULT_PRICE;
         }
-        Map<String,Double> prices=li2.get(0).getOtp();
+        Map<String,Double> prices=li2.get(0).getOccupancyToPrice();
         if(prices.containsKey(occupancy) && prices.get(occupancy)!=null){
             Double cache_value = prices.get(occupancy);
             map.put(cacheKey, prices);
@@ -106,60 +86,48 @@ public class HotelReservationController {
             }
         }
         map.put(cacheKey, prices);
-        return ans;
+        return ans;*/
+
+        return roomPriceService.get(hotelReservationRequest);
     }
 
-    @PutMapping("hotelreservations")
-    //@CachePut(key="#hotelReservationRequest.keyForCache()",value=HASH)
+
+    @RequestMapping(value = "hotelreservations",method = RequestMethod.PUT)
     public String updateHotelReservation(@Valid @RequestBody RoomPriceForUpdate roomPriceForUpdate){
-        if(roomPriceForUpdate.getOtp().isEmpty()){
+        /*if(roomPriceForUpdate.getOccupancyToPrice() == null|| roomPriceForUpdate.getOccupancyToPrice().isEmpty()){
             throw new BadlyFormatedException("Price for Occupancy 1 can not be null");
         }
-        if(!validate(roomPriceForUpdate.getOtp())){
+        if(!validate(roomPriceForUpdate.getOccupancyToPrice())){
             throw new BadlyFormatedException("Prices of occupancies should be in Non-decreasing order");
         }
-        //System.out.println(roomPriceForUpdate.getOtp().toString());
-        int rows=roomPrice2Repository.deleterow(roomPriceForUpdate.getHotel_id(),roomPriceForUpdate.getDate(),
-                RoomCatEnum.valueOf(roomPriceForUpdate.getRoom_category()).getValue());
+        int rows=roomPriceService.deleterow(roomPriceForUpdate.getHotelId(),roomPriceForUpdate.getDate(),
+                RoomCatEnum.valueOf(roomPriceForUpdate.getRoomCategory()).getValue());
         if(rows==0) throw new CombinationNotFoundException("Record does not exist!!");
-        RoomPrice2 roomPrice2=new RoomPrice2(roomPriceForUpdate.getHotel_id(),roomPriceForUpdate.getDate(),
-                RoomCatEnum.valueOf(roomPriceForUpdate.getRoom_category()).getValue(),
-                roomPriceForUpdate.getOtp());
-        roomPrice2Repository.save(roomPrice2);
+        RoomPrice roomPrice =new RoomPrice(roomPriceForUpdate.getHotelId(),roomPriceForUpdate.getDate(),
+                RoomCatEnum.valueOf(roomPriceForUpdate.getRoomCategory()).getValue(),
+                roomPriceForUpdate.getOccupancyToPrice());
+        roomPriceService.save(roomPrice);
 
         String cacheKey=roomPriceForUpdate.keyForCache();
-        map.put(cacheKey,roomPriceForUpdate.getOtp());
-        return "Update Successfull";
+        map.put(cacheKey,roomPriceForUpdate.getOccupancyToPrice());
+        return "Update Successfull";*/
+
+        return roomPriceService.update(roomPriceForUpdate);
     }
 
-    @DeleteMapping("hotelreservations")
-    //@CacheEvict(key="#hotelReservationRequest.keyForCache()",value=HASH)
+    @RequestMapping(value="hotelreservations",method=RequestMethod.DELETE)
     public String deleteHotelReservation(@Valid @RequestBody RoomForDelete roomForDelete){
 
-        String cacheKey=roomForDelete.keyForCache();
+      /*  String cacheKey=roomForDelete.keyForCache();
 
 
-        int rows=roomPrice2Repository.deleterow(roomForDelete.getHotel_id(),roomForDelete.getDate(),
-                RoomCatEnum.valueOf(roomForDelete.getRoom_category()).getValue());
+        int rows=roomPriceService.deleterow(roomForDelete.getHotelId(),roomForDelete.getDate(),
+                RoomCatEnum.valueOf(roomForDelete.getRoomCategory()).getValue());
         if(rows==0) throw new CombinationNotFoundException("Record does not exist!!");
 
         map.remove(cacheKey);
-        return "delete Successfull";
-    }
+        return "delete Successfull";*/
 
-   /* @GetMapping("/demo")
-    public String getMap(){
-        List<RoomPrice2> lis=roomPrice2Repository.findById(1);
-        return lis.get(0).getOtp().toString();
-    }*/
-
-    public boolean validate(Map<String,Double> map){
-        double f=-1.0;
-        for(Map.Entry<String,Double> e: map.entrySet()){
-            double val=e.getValue();
-            if(val<f) return false;
-            f=val;
-        }
-        return true;
+        return roomPriceService.delete(roomForDelete);
     }
 }

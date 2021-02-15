@@ -1,7 +1,6 @@
 package com.techprimers.kafka.springbootkafkaconsumerexample.config;
 
 import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice;
-import com.techprimers.kafka.springbootkafkaconsumerexample.model.RoomPrice2;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,7 @@ public class KafkaProducerConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, RoomPrice2> kafkaTemplate(){
-        return new KafkaTemplate<String, RoomPrice2>(producerFactory());
+    public KafkaTemplate<String, RoomPrice> kafkaTemplate(){
+        return new KafkaTemplate<String, RoomPrice>(producerFactory());
     }
 }

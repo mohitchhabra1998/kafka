@@ -1,4 +1,4 @@
-package com.techprimers.kafka.springbootkafkaconsumerexample.model;
+package com.techprimers.kafka.springbootkafkaconsumerexample.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.techprimers.kafka.springbootkafkaconsumerexample.Enums.RoomCatEnum;
@@ -15,10 +15,10 @@ public class RoomForDelete {
 
     @Min(value = 1,message = "hotel_id should be greater than 0")
     @NotNull(message="Hotel Id is required")
-    private long hotel_id;
+    private long hotelId;
 
     @NotNull(message="Room_Category Id is required")
-    private String room_category;
+    private String roomCategory;
 
     @Basic
     @Temporal(TemporalType.DATE)
@@ -28,20 +28,26 @@ public class RoomForDelete {
     public RoomForDelete() {
     }
 
-    public long getHotel_id() {
-        return hotel_id;
+    public RoomForDelete(long hotelId, String roomCategory, Date date) {
+        this.hotelId = hotelId;
+        this.roomCategory = roomCategory;
+        this.date = date;
     }
 
-    public void setHotel_id(long hotel_id) {
-        this.hotel_id = hotel_id;
+    public long getHotelId() {
+        return hotelId;
     }
 
-    public String getRoom_category() {
-        return room_category;
+    public void setHotelId(long hotelId) {
+        this.hotelId = hotelId;
     }
 
-    public void setRoom_category(String room_category) {
-        this.room_category = room_category;
+    public String getRoomCategory() {
+        return roomCategory;
+    }
+
+    public void setRoomCategory(String roomCategory) {
+        this.roomCategory = roomCategory;
     }
 
     public Date getDate() {
@@ -53,6 +59,6 @@ public class RoomForDelete {
     }
 
     public String keyForCache() {
-        return this.hotel_id+"@"+ RoomCatEnum.valueOf(this.room_category).getValue() +"@"+this.date.toString();
+        return this.hotelId+"@"+ RoomCatEnum.valueOf(this.roomCategory).getValue() +"@"+this.date.toString();
     }
 }

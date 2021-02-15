@@ -1,7 +1,5 @@
 package com.techprimers.kafka.springbootkafkaconsumerexample.config;
 
-import com.techprimers.kafka.springbootkafkaconsumerexample.model.Price;
-import org.apache.kafka.common.serialization.DoubleSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
